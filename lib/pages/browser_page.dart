@@ -5,6 +5,7 @@ import 'package:calculator/pages/vault_filter_page.dart';
 import 'package:flutter/material.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:user_command/user_command.dart';
 
 import '../app.dart';
 
@@ -82,79 +83,65 @@ class _BrowserPageState extends State<BrowserPage> {
             ));
   }
 
-  final delete = "Delete";
-  final moveDown = "Move down";
-  final moveUp = "Move up";
-  final edit = "Edit";
-
-  Future<String?> _showPopupMenu(
-      BuildContext context, Offset offset, String url) async {
-    return await showMenu<String>(
-      context: context,
-      position: RelativeRect.fromLTRB(offset.dx, offset.dy, 100, 400),
-      items: [
-        PopupMenuItem(
-          child: Text(edit),
-          value: edit,
-        ),
-        PopupMenuItem(
-          child: Text(moveUp),
-          value: moveUp,
-        ),
-        PopupMenuItem(
-          child: Text(moveDown),
-          value: moveDown,
-        ),
-        PopupMenuItem(
-          child: Text(delete),
-          value: delete,
-        ),
-      ],
-      elevation: 8.0,
-    );
-  }
-
   ListView createListView(BuildContext context) {
+    var urls = UrlService().all;
     return ListView(
       children: <Widget>[
         ListTile(
           leading: media_file_icon,
           title: Text('Vault'),
           onTap: () => {
-            Provider.of<Navigation>(context, listen: false).activePage =
+             context.read<Navigation>().activePage =
                 VaultFilterPage()
           },
         ),
-        for (String url in UrlService().all)
-          GestureDetector(
-            onLongPressStart: (LongPressStartDetails details) => {
-              _showPopupMenu(context, details.globalPosition, url)
-                  .then((value) {
-                if (value == edit) {
-                  editUrl(context, 'Edit URL', 'Update', url)
-                      .then((newUrl) {
-                    if (newUrl != null) {
-                      UrlService().update(url, newUrl);
-                      setState(() {});
-                    }
-                  });
-                } else if (value == moveUp) {
-                  UrlService().moveUp(url);
-                  setState(() {});
-                } else if (value == moveDown) {
-                  UrlService().moveDown(url);
-                  setState(() {});
-                } else if (value == delete) {
-                  UrlService().delete(url);
-                  setState(() {});
-                }
-              })
-            },
+        for (String url in urls)
+          CommandPopupMenuWrapper(
             child: ListTile(
               leading: browser_icon,
               title: Text(url),
               onTap: () => {UrlService().openInIncognitoBrowser(url)},
             ),
+            popupMenuTitle: url,
+            event: PopupMenuEvent.onLongPress,
+            commands: [
+              Command(
+                name: 'Edit',
+                icon: Icons.edit,
+                action: () {
+                  editUrl(context, 'Edit URL', 'Update', url).then((newUrl) {
+                    if (newUrl != null) {
+                      UrlService().update(url, newUrl);
+                      setState(() {});
+                    }
+                  });
+                },
+              ),
+              Command.dynamic(
+                name: () =>'Move up',
+                icon: () =>Icons.arrow_upward,
+                visible: () => url!=urls.first!,
+                action: () {
+                  UrlService().moveUp(url);
+                  setState(() {});
+                },
+              ),
+              Command.dynamic(
+                  name: () => 'Move down',
+                  icon: () => Icons.arrow_downward,
+                  visible: () => url!=urls.last,
+                  action: () {
+                    UrlService().moveDown(url);
+                    setState(() {});
+                  }),
+              Command(
+                  name: 'Delete',
+                  icon: Icons.delete,
+                  action: () {
+                    UrlService().delete(url);
+                    setState(() {});
+                  }),
+            ],
           ),
       ],
     );
