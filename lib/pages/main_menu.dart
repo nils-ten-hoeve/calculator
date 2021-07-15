@@ -1,8 +1,12 @@
-import 'package:calculator/pages/settings_page.dart';
+import 'dart:io';
+
+import 'package:calculator/constants.dart';
+import 'package:calculator/domain/directory.dart';
 import 'package:calculator/pages/vault_filter_page.dart';
+import 'package:calculator/pages/vault_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:calculator/constants.dart';
+import 'package:user_command/user_command.dart';
 
 import '../app.dart';
 import 'browser_page.dart';
@@ -13,40 +17,27 @@ class MainMenu extends StatelessWidget {
     return Drawer(
         child: Scaffold(
       appBar: AppBar(title: Text('Menu')),
-      body: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            ListTile(
-              leading: media_file_icon,
-              title: Text('Vault'),
-              onTap: () {
-                Provider.of<Navigation>(context, listen: false).activePage =
-                    VaultFilterPage();
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: browser_icon,
-              title: Text('Browse'),
-              onTap: () {
-                Provider.of<Navigation>(context, listen: false).activePage =
-                    BrowserPage();
-                Navigator.pop(context);
-              },
-            ),
+      body: CommandListView([
+        Command(
+          name: 'Vault',
+          icon: media_file_icon,
+          action: () {
+            context.read<Navigation>().activePage =
+                VaultFilterPage();
+            Navigator.pop(context);
+          },
+        ),
 
-            ListTile(
-              leading: settings_icon,
-              title: Text('Settings'),
-              onTap: () {
-                Provider.of<Navigation>(context, listen: false).activePage =
-                    SettingsPage();
-                Navigator.pop(context);
-              },
-            ),
-
-          ]),
+        Command(
+          name: 'Browse',
+          icon: browser_icon,
+          action: () {
+            context.read<Navigation>().activePage =
+                BrowserPage();
+            Navigator.pop(context);
+          },
+        ),
+      ]),
     ));
   }
 }

@@ -256,7 +256,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           startsWithThree(operand2) ||
                           startsWithThree(result)) {
                         VolumeControl.setVolume(0);//Just in case we forget :-(
-                        Provider.of<Navigation>(context, listen: false)
+                        context.read<Navigation>()
                             .activePage = BrowserPage();
                       }
                     },

@@ -1,9 +1,9 @@
-import 'package:calculator/domain/settings.dart';
+import 'dart:io';
+
+import 'package:calculator/domain/directory.dart';
 import 'package:calculator/domain/url.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/calculator_page.dart';
@@ -11,8 +11,8 @@ import 'pages/calculator_page.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    askPermissions(context);
-    initHives();
+    // askPermissions(context);
+    initHives(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Calculator',
@@ -24,10 +24,10 @@ class App extends StatelessWidget {
     );
   }
 
-  Future<void> askPermissions(BuildContext context) async {
-    askStoragePermissionIfNeeded();
-    await askManageExternalStoragePermissionIdNeeded(context);
-  }
+  // Future<void> askPermissions(BuildContext context) async {
+  //   askStoragePermissionIfNeeded();
+  //   await askManageExternalStoragePermissionIdNeeded(context);
+  // }
 
   Future<void> askManageExternalStoragePermissionIdNeeded(
       BuildContext context) async {
@@ -54,18 +54,16 @@ class App extends StatelessWidget {
     // TODO is the Permission.storage good enaugh?
     // TODO can we use the sdcard/android/app folder?
 
-    print('>>> ${await Permission.storage.status}');
-    print('>>> ${await Permission.manageExternalStorage.status}');
+    // print('>>> ${await Permission.storage.status}');
+    // print('>>> ${await Permission.manageExternalStorage.status}');
   }
 
-  Future<PermissionStatus> askStoragePermissionIfNeeded() =>
-      Permission.storage.request();
+  // Future<PermissionStatus> askStoragePermissionIfNeeded() =>
+  //     Permission.storage.request();
 
-  Future<void> initHives() async {
-    getExternalStorageDirectory().then((value) => print(">>>" + value!.path));
-    var directory = await getApplicationDocumentsDirectory();
-    Hive.init(directory.path);
-    SettingsRepository.init();
+  Future<void> initHives(BuildContext context) async {
+    Directory? vaultDirectory=await context.read<DirectoryService>().vaultDirectory;
+    Hive.init(vaultDirectory!.path);
     UrlRepository.init();
   }
 }
@@ -94,7 +92,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     //Navigate to calculator page when the application life cycle state changes
-    Provider.of<Navigation>(context, listen: false).activePage =
+    context.read<Navigation>().activePage =
         CalculatorPage();
   }
 

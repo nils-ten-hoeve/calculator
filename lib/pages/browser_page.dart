@@ -2,17 +2,14 @@ import 'package:calculator/constants.dart';
 import 'package:calculator/domain/url.dart';
 import 'package:calculator/pages/main_menu.dart';
 import 'package:calculator/pages/vault_filter_page.dart';
+import 'package:calculator/pages/vault_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:user_command/user_command.dart';
 
 import '../app.dart';
-
-/// TODO Add with floating plus button
-/// TODO Move up with context menu
-/// TODO Move down with contect menu
-/// TODO Delete with contect menu
+import '../constants.dart';
 
 // ignore: must_be_immutable
 class BrowserPage extends StatefulWidget {
@@ -21,8 +18,6 @@ class BrowserPage extends StatefulWidget {
 }
 
 class _BrowserPageState extends State<BrowserPage> {
-  UrlService urlService(BuildContext context) =>
-      Provider.of<UrlService>(context);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +38,7 @@ class _BrowserPageState extends State<BrowserPage> {
         editUrl(context, 'Enter a new URL', 'Add', 'https://').then((newUrl) {
           if (newUrl != null) {
             try {
-              UrlService().add(newUrl);
+              context.read<UrlService>().add(newUrl);
               setState(() {});
             } on Exception catch (e) {
               showException(context, e);
@@ -84,61 +79,72 @@ class _BrowserPageState extends State<BrowserPage> {
   }
 
   ListView createListView(BuildContext context) {
-    var urls = UrlService().all;
+    UrlService urlService = context.read<UrlService>();
+    var urls =  urlService.all;
     return ListView(
       children: <Widget>[
-        ListTile(
-          leading: media_file_icon,
-          title: Text('Vault'),
-          onTap: () => {
-             context.read<Navigation>().activePage =
-                VaultFilterPage()
+        CommandTile(
+          Command(
+            name: 'Viewer',
+            icon: media_file_icon,
+            action: () {
+              context.read<Navigation>().activePage =
+                  VaultViewerPage();
+            },
+          )),
+        CommandTile(Command(
+          name: 'Vault',
+          icon: media_file_icon,
+          action: () {
+            context.read<Navigation>().activePage = VaultFilterPage();
           },
-        ),
-        for (String url in urls)
+        )),
+        for (int i = 0; i < urls.length; i++)
+          // using index otherwise the order is wrong.
           CommandPopupMenuWrapper(
             child: ListTile(
-              leading: browser_icon,
-              title: Text(url),
-              onTap: () => {UrlService().openInIncognitoBrowser(url)},
+              leading: Icon(browser_icon),
+              title: Text(urls[i]),
+              onTap: () => {urlService.openInIncognitoBrowser(urls[i])},
             ),
-            popupMenuTitle: url,
+            popupMenuTitle: urls[i],
             event: PopupMenuEvent.onLongPress,
             commands: [
               Command(
                 name: 'Edit',
                 icon: Icons.edit,
                 action: () {
-                  editUrl(context, 'Edit URL', 'Update', url).then((newUrl) {
+                  editUrl(context, 'Edit URL', 'Update', urls[i])
+                      .then((newUrl) {
                     if (newUrl != null) {
-                      UrlService().update(url, newUrl);
+                      urlService.update(urls[i], newUrl);
                       setState(() {});
                     }
                   });
                 },
               ),
               Command.dynamic(
-                name: () =>'Move up',
-                icon: () =>Icons.arrow_upward,
-                visible: () => url!=urls.first!,
+                name: () => 'Move up',
+                icon: () => Icons.arrow_upward,
+                visible: () => urls[i] != urls.first,
                 action: () {
-                  UrlService().moveUp(url);
+                  urlService.moveUp(urls[i]);
                   setState(() {});
                 },
               ),
               Command.dynamic(
                   name: () => 'Move down',
                   icon: () => Icons.arrow_downward,
-                  visible: () => url!=urls.last,
+                  visible: () => urls[i] != urls.last,
                   action: () {
-                    UrlService().moveDown(url);
+                    urlService.moveDown(urls[i]);
                     setState(() {});
                   }),
               Command(
                   name: 'Delete',
                   icon: Icons.delete,
                   action: () {
-                    UrlService().delete(url);
+                    urlService.delete(urls[i]);
                     setState(() {});
                   }),
             ],

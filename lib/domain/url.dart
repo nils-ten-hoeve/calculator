@@ -1,16 +1,11 @@
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
-import 'package:calculator/domain/settings.dart';
+import 'package:calculator/constants.dart';
 import 'package:hive/hive.dart';
 
 /// Service class to manage Url's
 class UrlService {
-  static final UrlService _urlService = UrlService._();
-
-  factory UrlService() => _urlService;
-
-  UrlService._();
 
   final List<String> _urls = UrlRepository().read();
 
@@ -86,19 +81,15 @@ class UrlRepository {
 
   Box get box => Hive.box(hiveBoxName);
 
-  /// urls.hive data file is stored in the vault directory so that it is copied when making a backup of the vault directory
-  static String get repositoryPath {
-    var vaultDirectory = SettingsRepository().read().vaultDirectory;
-
-    return vaultDirectory.path + '/' + hiveBoxName + '.hive';
-  }
 
   static init() async {
     //TODO https://mukhtharcm.com/storage-permission-in-flutter
     //TODO https://pub.dev/packages/permission_handler
 
-    await Hive.openBox(hiveBoxName,
-        path: repositoryPath); //TODO encryptionCipher
+    await Hive.openBox(
+      hiveBoxName,
+      encryptionCipher: hiveCipher,
+    );
   }
 
   List<String> read() {
@@ -108,11 +99,8 @@ class UrlRepository {
 
   void write(List<String> urls) async {
     for (int i = 0; i < urls.length; i++) {
-      box.put(key(i), urls[i]);
+      box.put(i, urls[i]);
     }
   }
 
-  key(int i) {
-    return 'url$i';
-  }
 }

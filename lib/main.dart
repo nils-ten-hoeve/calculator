@@ -1,4 +1,5 @@
-import 'package:calculator/domain/settings.dart';
+import 'package:calculator/domain/directory.dart';
+import 'package:calculator/domain/url.dart';
 import 'package:calculator/domain/vault_filter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => Navigation()),
         Provider(create: (_) => FormVaultFilter()),
-        Provider(create: (_) => SettingsService()),
+        Provider(create: (_) => DirectoryService()),
+        Provider(create: (_) => UrlService()),
       ],
       child: App(),
     ),

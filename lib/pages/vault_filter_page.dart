@@ -13,7 +13,7 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
   @override
   Widget build(BuildContext context) {
     FormVaultFilter formVaultFilter =
-        Provider.of<FormVaultFilter>(context, listen: false);
+    context.read<FormVaultFilter>();
     return Scaffold(
         appBar: AppBar(
           title: Text('Vault filter'),

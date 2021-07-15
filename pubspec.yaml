@@ -17,9 +17,10 @@ dependencies:
   prompt_dialog: ^1.0.0
   hive: ^2.0.4
   path_provider: ^2.0.2
-  permission_handler: ^8.0.1
+  permission_handler: ^8.1.2
   volume_control: ^0.1.5
   user_command: ^0.0.3
+  video_player: ^2.1.10
 
 
 dev_dependencies:
