@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:calculator/constants.dart';
-import 'package:calculator/domain/directory.dart';
 import 'package:calculator/pages/vault_filter_page.dart';
-import 'package:calculator/pages/vault_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:user_command/user_command.dart';
@@ -22,18 +18,15 @@ class MainMenu extends StatelessWidget {
           name: 'Vault',
           icon: media_file_icon,
           action: () {
-            context.read<Navigation>().activePage =
-                VaultFilterPage();
+            context.read<Navigation>().activePage = VaultFilterPage();
             Navigator.pop(context);
           },
         ),
-
         Command(
           name: 'Browse',
           icon: browser_icon,
           action: () {
-            context.read<Navigation>().activePage =
-                BrowserPage();
+            context.read<Navigation>().activePage = BrowserPage();
             Navigator.pop(context);
           },
         ),

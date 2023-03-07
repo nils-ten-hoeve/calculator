@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 
 /// Service class to manage Url's
 class UrlService {
-
   final List<String> _urls = UrlRepository().read();
 
   List<String> get all => List.unmodifiable(_urls);
@@ -81,7 +80,6 @@ class UrlRepository {
 
   Box get box => Hive.box(hiveBoxName);
 
-
   static init() async {
     //TODO https://mukhtharcm.com/storage-permission-in-flutter
     //TODO https://pub.dev/packages/permission_handler
@@ -102,5 +100,4 @@ class UrlRepository {
       box.put(i, urls[i]);
     }
   }
-
 }

@@ -10,6 +10,7 @@ class MediaItem {
   final MediaFileType mediaType;
   final List<MediaFile> mediaFiles;
   final DateTime lastViewed;
+
   ///0=not rated, 1=1 star (worst), 5=5 stars (best)
   final int rating;
   final List<String> tags;

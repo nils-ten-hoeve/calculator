@@ -1,16 +1,14 @@
 import 'package:calculator/domain/directory.dart';
 import 'package:calculator/domain/url.dart';
 import 'package:calculator/domain/vault_filter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
 
-/// This is a reimplementation of the default Flutter application using provider + [ChangeNotifier].
+/// This is a re-implementation of the default Flutter application using provider + [ChangeNotifier].
 
 main() async {
-
   runApp(
     /// Providers are above [MyApp] instead of inside it, so that tests
     /// can use [MyApp] while mocking the providers

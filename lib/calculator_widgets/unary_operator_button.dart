@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UnaryOperatorButton extends StatelessWidget {
-
-  UnaryOperatorButton({required this.text,required this.onPressed});
+  UnaryOperatorButton({required this.text, required this.onPressed});
 
   final String text;
   final Function onPressed;
@@ -14,7 +13,7 @@ class UnaryOperatorButton extends StatelessWidget {
         child: RawMaterialButton(
           shape: const CircleBorder(),
           constraints: BoxConstraints.tight(Size(60.0, 60.0)),
-          onPressed:onPressed as void Function()?,
+          onPressed: onPressed as void Function()?,
           child: Text(
             text,
             style: TextStyle(color: Colors.black, fontSize: 20.0),

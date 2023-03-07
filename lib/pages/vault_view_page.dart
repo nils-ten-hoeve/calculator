@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:calculator/pages/main_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 List<String> items = [
@@ -33,8 +32,6 @@ class _VaultViewerPageState extends State<VaultViewerPage> {
   int index = 0;
   final minDragDistance = 20;
   Offset _tapDownPosition = Offset.zero;
-  double _scale = 1.0;
-  double? _startScale;
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +121,7 @@ class _VaultViewerPageState extends State<VaultViewerPage> {
 
   /// hides time, messages and telephone status bar
   void hideAndroidStatusBar() {
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     //You can bring it back with SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values)
   }
 
@@ -207,7 +204,7 @@ class _VideoViewerState extends State<VideoViewer> {
           children: <Widget>[
             VideoPlayer(_controller),
             _ControlsOverlay(controller: _controller),
-            VideoProgressIndicator(_controller, colors: ,allowScrubbing: true),
+            VideoProgressIndicator(_controller, allowScrubbing: true),
           ],
         ),
       ),

@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:user_command/user_command.dart';
 
 import '../app.dart';
-import '../constants.dart';
 
 // ignore: must_be_immutable
 class BrowserPage extends StatefulWidget {
@@ -18,7 +17,6 @@ class BrowserPage extends StatefulWidget {
 }
 
 class _BrowserPageState extends State<BrowserPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,18 +78,16 @@ class _BrowserPageState extends State<BrowserPage> {
 
   ListView createListView(BuildContext context) {
     UrlService urlService = context.read<UrlService>();
-    var urls =  urlService.all;
+    var urls = urlService.all;
     return ListView(
       children: <Widget>[
-        CommandTile(
-          Command(
-            name: 'Viewer',
-            icon: media_file_icon,
-            action: () {
-              context.read<Navigation>().activePage =
-                  VaultViewerPage();
-            },
-          )),
+        CommandTile(Command(
+          name: 'Viewer',
+          icon: media_file_icon,
+          action: () {
+            context.read<Navigation>().activePage = VaultViewerPage();
+          },
+        )),
         CommandTile(Command(
           name: 'Vault',
           icon: media_file_icon,

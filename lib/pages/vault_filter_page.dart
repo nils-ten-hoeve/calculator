@@ -12,8 +12,7 @@ class VaultFilterPage extends StatefulWidget {
 class _VaultFilterPageState extends State<VaultFilterPage> {
   @override
   Widget build(BuildContext context) {
-    FormVaultFilter formVaultFilter =
-    context.read<FormVaultFilter>();
+    FormVaultFilter formVaultFilter = context.read<FormVaultFilter>();
     return Scaffold(
         appBar: AppBar(
           title: Text('Vault filter'),
@@ -81,7 +80,9 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
                                           : Icons.star_border_outlined,
                                       color: (i >=
                                               formVaultFilter.minNumberOfStars)
-                                          ? Theme.of(context).accentColor
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .secondary
                                           : Colors.black),
                                   onPressed: () {
                                     formVaultFilter.minNumberOfStars = i;

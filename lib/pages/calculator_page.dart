@@ -255,9 +255,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       if (startsWithThree(operand1) ||
                           startsWithThree(operand2) ||
                           startsWithThree(result)) {
-                        VolumeControl.setVolume(0);//Just in case we forget :-(
-                        context.read<Navigation>()
-                            .activePage = BrowserPage();
+                        VolumeControl.setVolume(0); //Just in case we forget :-(
+                        context.read<Navigation>().activePage = BrowserPage();
                       }
                     },
                   )
@@ -457,6 +456,4 @@ class _CalculatorPageState extends State<CalculatorPage> {
         ? operand1.toStringAsFixed(0).toString().startsWith('3')
         : operand1.toString().startsWith('3');
   }
-
-
 }

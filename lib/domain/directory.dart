@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class DirectoryService {
-
-
   Directory? _appDirectory;
   Directory? _vaultDirectory;
 
@@ -24,7 +22,7 @@ class DirectoryService {
   // }
 
   Future<Directory?> get vaultDirectory async {
-    if (_vaultDirectory==null) {
+    if (_vaultDirectory == null) {
       Directory? vaultDir = await appDirectory;
       if (vaultDir == null) {
         return null;
@@ -40,17 +38,17 @@ class DirectoryService {
   }
 
   Future<Directory?> get appDirectory async {
-    if (_appDirectory==null) {
-      List<Directory>? externalDirectories = await getExternalStorageDirectories();
-      if (externalDirectories==null || externalDirectories.length<1) {
+    if (_appDirectory == null) {
+      List<Directory>? externalDirectories =
+          await getExternalStorageDirectories();
+      if (externalDirectories == null || externalDirectories.length < 1) {
         return null;
       }
-     _appDirectory= externalDirectories.firstWhere((dir) => !dir.path.startsWith('/storage/emulated/0'));
+      _appDirectory = externalDirectories
+          .firstWhere((dir) => !dir.path.startsWith('/storage/emulated/0'));
     }
     return _appDirectory;
   }
-
-
 
   // Future<File?> get urlsHiveFile async {
   //   if (_urlsHiveFile==null) {

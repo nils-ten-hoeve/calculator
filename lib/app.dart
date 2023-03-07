@@ -51,8 +51,8 @@ class App extends StatelessWidget {
     //         ));
 //TODO does not work: Permission.manageExternalStorage.request().isRestricted;
     // TODO remove manageExternalStorage (restricted above Andoid 11?) do we need it?
-    // TODO is the Permission.storage good enaugh?
-    // TODO can we use the sdcard/android/app folder?
+    // TODO is the Permission.storage good enough?
+    // TODO can we use the sd card/android/app folder?
 
     // print('>>> ${await Permission.storage.status}');
     // print('>>> ${await Permission.manageExternalStorage.status}');
@@ -62,7 +62,8 @@ class App extends StatelessWidget {
   //     Permission.storage.request();
 
   Future<void> initHives(BuildContext context) async {
-    Directory? vaultDirectory=await context.read<DirectoryService>().vaultDirectory;
+    Directory? vaultDirectory =
+        await context.read<DirectoryService>().vaultDirectory;
     Hive.init(vaultDirectory!.path);
     UrlRepository.init();
   }
@@ -79,21 +80,20 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     super.initState();
 
     /// register [didChangeAppLifecycleState] method as listener
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     /// unregister [didChangeAppLifecycleState] method
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     //Navigate to calculator page when the application life cycle state changes
-    context.read<Navigation>().activePage =
-        CalculatorPage();
+    context.read<Navigation>().activePage = CalculatorPage();
   }
 
   @override
