@@ -3,27 +3,27 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-const equal_sign = "\u003D";
+const equalSign = "\u003D";
 
-const add_sign = "\u002B";
+const addSign = "\u002B";
 
-const minus_sign = "-";
+const minusSign = "-";
 
-const multiply_sign = "\u00D7";
+const multiplySign = "\u00D7";
 
-const divide_sign = "\u00F7";
+const divideSign = "\u00F7";
 
-const percent_sign = "%";
+const percentSign = "%";
 
-const plus_or_minus_sign = "+/-";
+const plusOrMinusSign = "+/-";
 
-const clear_sign = "AC";
+const clearSign = "AC";
 
-const media_file_icon = Icons.lock_outline_sharp;
+const mediaFileIcon = Icons.perm_media_outlined;
 
-const browser_icon = Icons.star_border_outlined;
+const browserIcon = Icons.star_border_outlined;
 
-const settings_icon = Icons.settings;
+const settingsIcon = Icons.settings;
 
 final List<int> cipherKey =
     utf8.encoder.convert('A 32 character Aes cipher key!@#');

@@ -1,12 +1,12 @@
 import 'package:calculator/pages/vault_filter_page.dart';
 import 'package:collection/collection.dart';
 
-import 'media_item.dart';
+import 'media_file.dart';
 
-abstract class VaultFilter implements Comparable<MediaItem> {
+abstract class VaultFilter implements Comparable<MediaFile> {
   String get name;
 
-  bool appliesTo(MediaItem mediaItem);
+  bool appliesTo(MediaFile mediaFile);
 }
 
 abstract class ExtendedVaultFilter extends VaultFilter {
@@ -18,13 +18,13 @@ abstract class ExtendedVaultFilter extends VaultFilter {
 
 class UnRatedOrUntagged extends VaultFilter {
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }
@@ -35,13 +35,13 @@ class UnRatedOrUntagged extends VaultFilter {
 
 class FirstSeen extends ExtendedVaultFilter {
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }
@@ -52,13 +52,13 @@ class FirstSeen extends ExtendedVaultFilter {
 
 class LastSeen extends ExtendedVaultFilter {
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }
@@ -69,13 +69,13 @@ class LastSeen extends ExtendedVaultFilter {
 
 class RandomOrder extends ExtendedVaultFilter {
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }
@@ -86,13 +86,13 @@ class RandomOrder extends ExtendedVaultFilter {
 
 class PotentialDoubles extends VaultFilter {
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }
@@ -103,13 +103,13 @@ class PotentialDoubles extends VaultFilter {
 
 class BiggestToSmallest extends ExtendedVaultFilter {
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }
@@ -123,13 +123,13 @@ class FormVaultFilter extends ExtendedVaultFilter {
   VaultFilter type = VaultFilters().first;
 
   @override
-  bool appliesTo(MediaItem mediaItem) {
+  bool appliesTo(MediaFile mediaFile) {
     // TODO: implement appliesTo
     throw UnimplementedError();
   }
 
   @override
-  int compareTo(MediaItem other) {
+  int compareTo(MediaFile other) {
     // TODO: implement compareTo
     throw UnimplementedError();
   }

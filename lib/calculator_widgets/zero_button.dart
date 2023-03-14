@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ZeroButton extends StatelessWidget {
-  ZeroButton({required this.onPressed});
+  const ZeroButton({Key? key, required this.onPressed}) : super(key: key);
 
   final Function onPressed;
   @override
@@ -13,10 +13,10 @@ class ZeroButton extends StatelessWidget {
         width: MediaQuery.of(context).size.width / 2.5,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25.0),
-            color: Color.fromRGBO(56, 54, 56, 1.0)),
+            color: const Color.fromRGBO(56, 54, 56, 1.0)),
         child: MaterialButton(
           onPressed: onPressed as void Function()?,
-          child: Text(
+          child: const Text(
             "0",
             style: TextStyle(color: Colors.white, fontSize: 20.0),
           ),

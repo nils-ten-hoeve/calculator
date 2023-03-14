@@ -40,22 +40,25 @@ enum OtherOperation { clear, addDecimal, equals }
 
 // ignore: must_be_immutable
 class CalculatorPage extends StatefulWidget {
+  const CalculatorPage({Key? key}) : super(key: key);
+
   @override
-  _CalculatorPageState createState() => _CalculatorPageState();
+  State<CalculatorPage> createState() => _CalculatorPageState();
 }
 
 class _CalculatorPageState extends State<CalculatorPage> {
-  var operand1;
-  var operand2;
+  dynamic operand1;
+  dynamic operand2;
   String? operator;
-  var result;
+  dynamic result;
   bool isOperand1Completed = false;
-  TextStyle _whiteTextStyle = TextStyle(color: Colors.white, fontSize: 35.0);
+  final TextStyle _whiteTextStyle =
+      const TextStyle(color: Colors.white, fontSize: 35.0);
 
   @override
   void initState() {
     super.initState();
-    initialiseValues();
+    initializeValues();
   }
 
   @override
@@ -69,59 +72,57 @@ class _CalculatorPageState extends State<CalculatorPage> {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: Container(
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        operand1 != null
-                            ? SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Text(
-                                  operand1 is double
-                                      ? operand1.toStringAsFixed(2)
-                                      : operand1.toString(),
-                                  style: _whiteTextStyle,
-                                  textAlign: TextAlign.right,
-                                ),
-                              )
-                            : Container(),
-                        operator != null
-                            ? Text(
-                                operator.toString(),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      operand1 != null
+                          ? SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                operand1 is double
+                                    ? operand1.toStringAsFixed(2)
+                                    : operand1.toString(),
                                 style: _whiteTextStyle,
                                 textAlign: TextAlign.right,
-                              )
-                            : Container(),
-                        operand2 != null
-                            ? Text(
-                                operand2.toString(),
+                              ),
+                            )
+                          : Container(),
+                      operator != null
+                          ? Text(
+                              operator.toString(),
+                              style: _whiteTextStyle,
+                              textAlign: TextAlign.right,
+                            )
+                          : Container(),
+                      operand2 != null
+                          ? Text(
+                              operand2.toString(),
+                              style: _whiteTextStyle,
+                              textAlign: TextAlign.right,
+                            )
+                          : Container(),
+                      result != null
+                          ? const Divider(
+                              height: 5.0,
+                              color: Colors.white,
+                            )
+                          : Container(),
+                      result != null
+                          ? SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                result is double
+                                    ? result.toStringAsFixed(2)
+                                    : result.toString(),
                                 style: _whiteTextStyle,
                                 textAlign: TextAlign.right,
-                              )
-                            : Container(),
-                        result != null
-                            ? Divider(
-                                height: 5.0,
-                                color: Colors.white,
-                              )
-                            : Container(),
-                        result != null
-                            ? SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Text(
-                                  result is double
-                                      ? result.toStringAsFixed(2)
-                                      : result.toString(),
-                                  style: _whiteTextStyle,
-                                  textAlign: TextAlign.right,
-                                ),
-                              )
-                            : Container(),
-                      ],
-                    ),
+                              ),
+                            )
+                          : Container(),
+                    ],
                   ),
                 ),
               ),
@@ -135,19 +136,19 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     },
                   ),
                   UnaryOperatorButton(
-                    text: plus_or_minus_sign,
+                    text: plusOrMinusSign,
                     onPressed: () {
                       _unaryOperationAction(UnaryOperation.changeSign);
                     },
                   ),
                   UnaryOperatorButton(
-                    text: percent_sign,
+                    text: percentSign,
                     onPressed: () {
                       _unaryOperationAction(UnaryOperation.percent);
                     },
                   ),
                   BinaryOperatorButton(
-                    text: divide_sign,
+                    text: divideSign,
                     onPressed: () {
                       _binaryOperationAction(BinaryOperation.divide);
                     },
@@ -173,7 +174,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         _numberButtonAction("9");
                       }),
                   BinaryOperatorButton(
-                    text: multiply_sign,
+                    text: multiplySign,
                     onPressed: () {
                       _binaryOperationAction(BinaryOperation.multiply);
                     },
@@ -199,7 +200,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         _numberButtonAction("6");
                       }),
                   BinaryOperatorButton(
-                    text: minus_sign,
+                    text: minusSign,
                     onPressed: () {
                       _binaryOperationAction(BinaryOperation.subtract);
                     },
@@ -225,7 +226,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         _numberButtonAction("3");
                       }),
                   BinaryOperatorButton(
-                    text: add_sign,
+                    text: addSign,
                     onPressed: () {
                       _binaryOperationAction(BinaryOperation.add);
                     },
@@ -247,7 +248,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     },
                   ),
                   BinaryOperatorButton(
-                    text: equal_sign,
+                    text: equalSign,
                     onPressed: () {
                       _otherOperationAction(OtherOperation.equals);
                     },
@@ -256,7 +257,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           startsWithThree(operand2) ||
                           startsWithThree(result)) {
                         VolumeControl.setVolume(0); //Just in case we forget :-(
-                        context.read<Navigation>().activePage = BrowserPage();
+                        context.read<Navigation>().activePage =
+                            const BrowserPage();
                       }
                     },
                   )
@@ -269,7 +271,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
-  void initialiseValues() {
+  void initializeValues() {
     operand1 = null;
     operand2 = null;
     result = null;
@@ -282,19 +284,19 @@ class _CalculatorPageState extends State<CalculatorPage> {
     var exp1 = double.parse(operand1.toString());
     var exp2 = double.parse(operand2.toString());
     switch (operator) {
-      case add_sign:
+      case addSign:
         result = exp1 + exp2;
         break;
-      case minus_sign:
+      case minusSign:
         result = exp1 - exp2;
         break;
-      case multiply_sign:
+      case multiplySign:
         result = exp1 * exp2;
         break;
-      case divide_sign:
+      case divideSign:
         result = exp1 / exp2;
         break;
-      case percent_sign:
+      case percentSign:
         result = exp1 % exp2;
         break;
     }
@@ -304,7 +306,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   void _numberButtonAction(String text) {
-    if (result != null) initialiseValues();
+    if (result != null) initializeValues();
     if (isOperand1Completed) {
       if (operand2 == null) {
         operand2 = text;
@@ -322,11 +324,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   void _zeroButtonAction() {
-    if (result != null) initialiseValues();
+    if (result != null) initializeValues();
     if (isOperand1Completed) {
-      if (operand2 == null || operand1 == "0")
+      if (operand2 == null || operand1 == "0") {
         operand2 = "0";
-      else {
+      } else {
         if (operand2.toString().length < 9) operand2 += "0";
       }
     } else {
@@ -348,7 +350,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           operand2 = null;
           result = null;
         }
-        operator = add_sign;
+        operator = addSign;
         isOperand1Completed = true;
         break;
       case BinaryOperation.subtract:
@@ -358,7 +360,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           operand2 = null;
           result = null;
         }
-        operator = minus_sign;
+        operator = minusSign;
         isOperand1Completed = true;
         break;
       case BinaryOperation.multiply:
@@ -368,7 +370,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           operand2 = null;
           result = null;
         }
-        operator = multiply_sign;
+        operator = multiplySign;
         isOperand1Completed = true;
         break;
       case BinaryOperation.divide:
@@ -378,7 +380,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           operand2 = null;
           result = null;
         }
-        operator = divide_sign;
+        operator = divideSign;
         isOperand1Completed = true;
         break;
     }
@@ -388,9 +390,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
   void _unaryOperationAction(UnaryOperation operation) {
     switch (operation) {
       case UnaryOperation.changeSign:
-        if (result != null)
+        if (result != null) {
           result = -result;
-        else if (isOperand1Completed) {
+        } else if (isOperand1Completed) {
           if (operand2 != null) {
             operand2 = (-int.parse(operand2)).toString();
           }
@@ -401,9 +403,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
         }
         break;
       case UnaryOperation.percent:
-        if (result != null)
+        if (result != null) {
           result = result / 100;
-        else if (isOperand1Completed) {
+        } else if (isOperand1Completed) {
           if (operand2 != null) {
             operand2 = (double.parse(operand2) / 100).toString();
           }
@@ -420,10 +422,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
   _otherOperationAction(OtherOperation operation) {
     switch (operation) {
       case OtherOperation.clear:
-        initialiseValues();
+        initializeValues();
         break;
       case OtherOperation.addDecimal:
-        if (result != null) initialiseValues();
+        if (result != null) initializeValues();
         if (isOperand1Completed) {
           if (!operand2.toString().contains(".")) {
             if (operand2 == null) {

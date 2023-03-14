@@ -53,10 +53,10 @@ class UrlService {
         componentName: "nu.tommie.inbrowser.lib.Inbrowser",
         package: "nu.tommie.inbrowser",
         action: "android.intent.action.VIEW",
-        category: "android.intent.category.BROWSABLE",
+        category: "android.intent.category.GROWABLE",
         data: url,
       );
-      await intent.launch();
+      await intent.launch(); // TODO try again (after some time?) when it fails?
     }
   }
 
@@ -65,7 +65,7 @@ class UrlService {
       caseSensitive: false);
 
   void validate(String url) {
-    if (!_urlRegEx.hasMatch(url)) throw new Exception('Invalid Url');
+    if (!_urlRegEx.hasMatch(url)) throw Exception('Invalid Url');
   }
 }
 

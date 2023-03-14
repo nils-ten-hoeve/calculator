@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class VaultFilterPage extends StatefulWidget {
+  const VaultFilterPage({Key? key}) : super(key: key);
+
   @override
-  _VaultFilterPageState createState() => _VaultFilterPageState();
+  State<VaultFilterPage> createState() => _VaultFilterPageState();
 }
 
 class _VaultFilterPageState extends State<VaultFilterPage> {
@@ -15,9 +17,9 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
     FormVaultFilter formVaultFilter = context.read<FormVaultFilter>();
     return Scaffold(
         appBar: AppBar(
-          title: Text('Vault filter'),
+          title: const Text('Vault filter'),
         ),
-        drawer: MainMenu(),
+        drawer: const MainMenu(),
         body: ListView(
           children: <Widget>[
             createListTile(
@@ -33,16 +35,16 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
                     items: [
                       for (VaultFilter vaultFilter in VaultFilters())
                         DropdownMenuItem(
-                          child: Text(vaultFilter.name),
                           value: vaultFilter,
+                          child: Text(vaultFilter.name),
                         ),
                     ])),
-            if (formVaultFilter.type is ExtendedVaultFilter) Divider(),
+            if (formVaultFilter.type is ExtendedVaultFilter) const Divider(),
             if (formVaultFilter.type is ExtendedVaultFilter)
               Column(
                 children: [
                   CheckboxListTile(
-                      title: Text('Pictures'),
+                      title: const Text('Pictures'),
                       value: formVaultFilter.pictures,
                       onChanged: (bool? value) {
                         setState(() {
@@ -50,7 +52,7 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
                         });
                       }),
                   CheckboxListTile(
-                      title: Text('Animated pictures'),
+                      title: const Text('Animated pictures'),
                       value: formVaultFilter.animatedPictures,
                       onChanged: (bool? value) {
                         setState(() {
@@ -58,14 +60,15 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
                         });
                       }),
                   CheckboxListTile(
-                      title: Text('Movies'),
+                      title: const Text('Movies'),
                       value: formVaultFilter.movies,
                       onChanged: (bool? value) {
                         setState(() {
                           formVaultFilter.movies = value!;
                         });
                       }),
-                  if (formVaultFilter.type is ExtendedVaultFilter) Divider(),
+                  if (formVaultFilter.type is ExtendedVaultFilter)
+                    const Divider(),
                   if (formVaultFilter.type is ExtendedVaultFilter)
                     createListTile(
                         context,
@@ -102,7 +105,7 @@ class _VaultFilterPageState extends State<VaultFilterPage> {
       title: Row(
         children: [
           Align(alignment: Alignment.topLeft, child: Text(title)),
-          Spacer(),
+          const Spacer(),
           Align(
             alignment: Alignment.topRight,
             child: trailingWidget,

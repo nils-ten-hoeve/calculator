@@ -1,26 +1,30 @@
 import 'dart:io';
 
-import 'package:calculator/domain/directory.dart';
+import 'package:calculator/domain/media_file.dart';
 import 'package:calculator/domain/url.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:volume_control/volume_control.dart';
 
 import 'pages/calculator_page.dart';
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // askPermissions(context);
     initHives(context);
+    VolumeControl.setVolume(0); //Just in case we forget :-(
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Calculator',
       theme: ThemeData.dark().copyWith(
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          floatingActionButtonTheme:
-              FloatingActionButtonThemeData(backgroundColor: Colors.orange)),
-      home: MainPage(),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: Colors.orange)),
+      home: const MainPage(),
     );
   }
 
@@ -52,7 +56,7 @@ class App extends StatelessWidget {
 //TODO does not work: Permission.manageExternalStorage.request().isRestricted;
     // TODO remove manageExternalStorage (restricted above Andoid 11?) do we need it?
     // TODO is the Permission.storage good enough?
-    // TODO can we use the sd card/android/app folder?
+    // TODO can we use the sdcard/android/app folder?
 
     // print('>>> ${await Permission.storage.status}');
     // print('>>> ${await Permission.manageExternalStorage.status}');
@@ -63,15 +67,18 @@ class App extends StatelessWidget {
 
   Future<void> initHives(BuildContext context) async {
     Directory? vaultDirectory =
-        await context.read<DirectoryService>().vaultDirectory;
-    Hive.init(vaultDirectory!.path);
+        await context.read<MediaFileService>().vaultDirectory;
+    Hive.init(vaultDirectory.path);
     UrlRepository.init();
+    LastSeenFilePathRepository.init();
   }
 }
 
 class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
   @override
-  _MainPageState createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
@@ -93,7 +100,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     //Navigate to calculator page when the application life cycle state changes
-    context.read<Navigation>().activePage = CalculatorPage();
+    context.read<Navigation>().activePage = const CalculatorPage();
+    VolumeControl.setVolume(0); //Just in case we forget :-(
   }
 
   @override
@@ -103,7 +111,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 }
 
 class Navigation with ChangeNotifier {
-  Widget _activePage = CalculatorPage();
+  Widget _activePage = const CalculatorPage();
 
   Widget get activePage => _activePage;
 

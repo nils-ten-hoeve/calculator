@@ -21,12 +21,19 @@ dependencies:
   volume_control: ^0.1.5
   user_command: ^0.0.3
   video_player: ^2.1.10
+  network_info_plus: ^3.0.2
+  uuid: ^3.0.7
+  flutter_lints: ^2.0.1
+  path: ^1.8.2
+ 
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.9.0
+  given_when_then_unit_test: ^0.1.0
+  shouldly: ^0.5.0+1
 
 flutter:
   uses-material-design: true

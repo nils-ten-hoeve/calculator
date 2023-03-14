@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
 class BinaryOperatorButton extends StatelessWidget {
-  BinaryOperatorButton(
-      {required this.onPressed, this.onLongPressed, this.text});
-
-  final text;
+  final String text;
   final Function onPressed;
   final Function? onLongPressed;
+
+  const BinaryOperatorButton(
+      {Key? key,
+      required this.onPressed,
+      this.onLongPressed,
+      required this.text})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +18,15 @@ class BinaryOperatorButton extends StatelessWidget {
         padding: const EdgeInsets.all(5.0),
         child: RawMaterialButton(
           shape: const CircleBorder(),
-          constraints: BoxConstraints.tight(Size(60.0, 60.0)),
+          constraints: BoxConstraints.tight(const Size(60.0, 60.0)),
           onPressed: onPressed as void Function()?,
           onLongPress:
               onLongPressed == null ? null : onLongPressed as void Function()?,
+          fillColor: Colors.orange,
           child: Text(
             text,
-            style: TextStyle(color: Colors.white, fontSize: 20.0),
+            style: const TextStyle(color: Colors.white, fontSize: 20.0),
           ),
-          fillColor: Colors.orange,
         ));
   }
 }
