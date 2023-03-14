@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:uuid/uuid.dart';
 import 'package:path/path.dart';
 
 class MediaFileService {
@@ -180,56 +178,46 @@ enum MediaFileType {
   movie,
 }
 
-class MediaFileMapping {
-// TODO convert to enum;
+enum MediaFileMapping {
 // TODO combine with MediaFileMappings class
+
+  png('1.dat', '.png', MediaFileType.image),
+  jpg('2.dat', '.jpg', MediaFileType.image),
+  jpeg('2.dat', '.jpeg', MediaFileType.image),
+  wepb('3.dat', '.wepb', MediaFileType.image),
+  bmp('4.dat', '.bmp', MediaFileType.image),
+  wbmp('5.dat', '.wbmp', MediaFileType.image),
+  gif('8.dat', '.gif', MediaFileType.animatedImage),
+  mp4('a.dat', '.mp4', MediaFileType.movie),
+  gp3('b.dat', '.3gp', MediaFileType.movie);
+
+  const MediaFileMapping(this.vaultSuffix, this.typeSuffix, this.type);
 
   final String vaultSuffix;
   final String typeSuffix;
-  final RegExp vaultSuffixExp;
-  final RegExp typeSuffixExp;
   final MediaFileType type;
 
-  MediaFileMapping(this.vaultSuffix, this.typeSuffix, this.type)
-      : vaultSuffixExp = RegExp('${vaultSuffix.replaceAll('.', '\\.')}\$',
-            caseSensitive: false),
-        typeSuffixExp = RegExp('${typeSuffix.replaceAll('.', '\\.')}\$',
-            caseSensitive: false);
-
-  bool matchesVaultSuffix(String vaultPath) =>
-      vaultPath.contains(vaultSuffixExp);
-
-  bool matchesTypeSuffix(String sourcePath) =>
-      sourcePath.contains(typeSuffixExp);
-}
-
-class MediaFileMappings extends DelegatingList<MediaFileMapping> {
-  final uuid = const Uuid();
-  static final MediaFileMappings _singleton = MediaFileMappings._();
-
-  factory MediaFileMappings() {
-    return _singleton;
+  static MediaFileMapping? findForSourcePath(String sourcePath) {
+    sourcePath = sourcePath.toLowerCase();
+    return values
+        .firstWhereOrNull((mapping) => sourcePath.endsWith(mapping.typeSuffix));
   }
 
-  MediaFileMappings._()
-      : super([
-          MediaFileMapping('1.dat', '.png', MediaFileType.image),
-          MediaFileMapping('2.dat', '.jpg', MediaFileType.image),
-          MediaFileMapping('2.dat', '.jpeg', MediaFileType.image),
-          MediaFileMapping('3.dat', '.wepb', MediaFileType.image),
-          MediaFileMapping('4.dat', '.bmp', MediaFileType.image),
-          MediaFileMapping('5.dat', '.wbmp', MediaFileType.image),
-          MediaFileMapping('8.dat', '.gif', MediaFileType.animatedImage),
-          MediaFileMapping('a.dat', '.mp4', MediaFileType.movie),
-          MediaFileMapping('b.dat', '.3gp', MediaFileType.movie),
-        ]);
+  static MediaFileMapping? findForVaultPath(String vaultPath) {
+    vaultPath = vaultPath.toLowerCase();
+    return values
+        .firstWhereOrNull((mapping) => vaultPath.endsWith(mapping.vaultSuffix));
+  }
+}
+
+class MediaFileMappings  {
 
   Future<String> createVaultFilePath(String sourceFilePath) async {
-    var mapping =
-        firstWhere((m) => m.matchesTypeSuffix(sourceFilePath), orElse: () {
+    var mapping = MediaFileMapping.findForSourcePath(sourceFilePath);
+    if (mapping == null) {
       throw Exception(
           'Invalid or unknown sourceFilePath file name suffix: $sourceFilePath');
-    });
+    }
     var vaultDirectory = await MediaFileService().vaultDirectory;
     var fileName = createVaultFileName(sourceFilePath);
     var path = '${vaultDirectory.path}/$fileName${mapping.vaultSuffix}';
@@ -292,27 +280,25 @@ class MediaFileMappings extends DelegatingList<MediaFileMapping> {
   String fileNameWithoutExtension(String sourceFilePath) =>
       basenameWithoutExtension(sourceFilePath);
 
-  bool hasTypeSuffix(String sourceFilePath) {
-    return where((m) => m.matchesTypeSuffix(sourceFilePath)).isNotEmpty;
-  }
+  bool hasTypeSuffix(String sourceFilePath) => MediaFileMapping.findForSourcePath(sourceFilePath)!=null;
 
   String createEmulatedVaultFilePath(String vaultFilePath) {
-    var mapping =
-        firstWhere((m) => m.matchesVaultSuffix(vaultFilePath), orElse: () {
+    var mapping =MediaFileMapping.findForVaultPath(vaultFilePath);
+    if (mapping==null) {
       throw Exception(
           'Invalid or unknown vaultFilePath file name suffix: $vaultFilePath');
-    });
+    }
     var datExtExp = RegExp(r'\.dat$');
     var path = vaultFilePath.replaceFirst(datExtExp, mapping.typeSuffix);
     return path;
   }
 
   MediaFileType vaultFileType(String vaultFilePath) {
-    var mapping =
-        firstWhere((m) => m.matchesVaultSuffix(vaultFilePath), orElse: () {
+    var mapping = MediaFileMapping.findForVaultPath(vaultFilePath);
+    if (mapping==null) {
       throw Exception(
           'Invalid or unknown vaultFilePath file name suffix: $vaultFilePath');
-    });
+    }
     return mapping.type;
   }
 }
