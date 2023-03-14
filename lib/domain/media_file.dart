@@ -268,7 +268,7 @@ class MediaFileMappings  {
   bool isLetter(int codeUnit) =>
       codeUnit >= 'a'.codeUnitAt(0) && codeUnit <= 'z'.codeUnitAt(0);
 
-// "a" is 1, "z" is 26, "aa" is 27, "az" is 52, "ba" is 53, etc.
+  // "a" is 1, "z" is 26, "aa" is 27, "az" is 52, "ba" is 53, etc.
   int lettersToNumber(String letters) {
     var result = 0;
     for (var i = 0; i < letters.length; i++) {
