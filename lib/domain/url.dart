@@ -56,7 +56,13 @@ class UrlService {
         category: "android.intent.category.GROWABLE",
         data: url,
       );
-      await intent.launch(); // TODO try again (after some time?) when it fails?
+      try {
+        await intent.launch();
+      } catch (e) {
+        //TODO test the following, maybe we can not catch an error ro maybe we need to call the following after some delay
+        // Try again, because InBrowser normally crashes the first time it is called.
+        await intent.launch();
+      }
     }
   }
 

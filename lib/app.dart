@@ -99,9 +99,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    //Navigate to calculator page when the application life cycle state changes
-    context.read<Navigation>().activePage = const CalculatorPage();
-    VolumeControl.setVolume(0); //Just in case we forget :-(
+    setState(() {
+      //Navigate to calculator page when the application life cycle state changes
+      context.read<Navigation>().activePage = const CalculatorPage();
+      VolumeControl.setVolume(0); //Just in case we forget :-(
+    });
   }
 
   @override

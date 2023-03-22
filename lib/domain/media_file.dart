@@ -77,15 +77,16 @@ class MediaFileService {
   }
 
   Future<List<String>> findMediaFilesInBrowserDirectory() async {
-    Directory inBrowserDirectory = await MediaFileService().inBrowserDirectory;
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
     }
+    
+    Directory inBrowserDirectory = await MediaFileService().inBrowserDirectory;
+    
     Stream<FileSystemEntity> files = inBrowserDirectory.list();
     return files
-        .where(
-            (FileSystemEntity e) => MediaFileMappings().hasTypeSuffix(e.path))
+        .where((FileSystemEntity e) => MediaFileMapping.findForSourcePath(e.path)!=null)
         .map<String>((FileSystemEntity e) => e.path)
         .toList();
   }
@@ -131,40 +132,39 @@ class MediaFileMoveService with ChangeNotifier {
     List<String> paths =
         await MediaFileService().findMediaFilesInBrowserDirectory();
     for (String sourcePath in paths) {
-      MediaFileMappings()
-          .createVaultFilePath(sourcePath)
-          .then((destinationPath) async {
-        var status = await Permission.storage.status;
-        if (!status.isGranted) {
-          await Permission.storage.request();
-        }
+      var mapping = MediaFileMapping.findForSourcePath(sourcePath)!;
+      var destinationPath = await mapping.createVaultFilePath(sourcePath);
+      //   .then((destinationPath) async {
+      // var status = await Permission.storage.status;
+      // if (!status.isGranted) {
+      //   await Permission.storage.request();
+      // }
+      // status = await Permission.manageExternalStorage.status;
+      // if (!status.isGranted) {
+      //   await Permission.manageExternalStorage.request();
+      // }
 
-        status = await Permission.manageExternalStorage.status;
-        if (!status.isGranted) {
-          await Permission.manageExternalStorage.request();
-        }
-
-        try {
-          File(sourcePath).copy(destinationPath);
-          File(sourcePath).delete();
-          log.add(MediaFileMoveLogItem(
-            status: 'OK',
-            sourcePath: sourcePath,
-            destinationPath: destinationPath,
-          ));
-          notifyListeners();
-          filesMoved++;
-        } on Exception catch (e) {
-          log.add(MediaFileMoveLogItem(
-            status: 'Failed: $e',
-            sourcePath: sourcePath,
-            destinationPath: destinationPath,
-          ));
-          notifyListeners();
-          filesFailedToMove++;
-        }
-      });
+      try {
+        File(sourcePath).copy(destinationPath);
+        File(sourcePath).delete();
+        log.add(MediaFileMoveLogItem(
+          status: 'OK',
+          sourcePath: sourcePath,
+          destinationPath: destinationPath,
+        ));
+        notifyListeners();
+        filesMoved++;
+      } on Exception catch (e) {
+        log.add(MediaFileMoveLogItem(
+          status: 'Failed: $e',
+          sourcePath: sourcePath,
+          destinationPath: destinationPath,
+        ));
+        notifyListeners();
+        filesFailedToMove++;
+      }
     }
+
     log.add(MediaFileMoveLogItem(
       status: 'Completed: moved: $filesMoved, failed: $filesFailedToMove',
     ));
@@ -208,19 +208,11 @@ enum MediaFileMapping {
     return values
         .firstWhereOrNull((mapping) => vaultPath.endsWith(mapping.vaultSuffix));
   }
-}
-
-class MediaFileMappings  {
 
   Future<String> createVaultFilePath(String sourceFilePath) async {
-    var mapping = MediaFileMapping.findForSourcePath(sourceFilePath);
-    if (mapping == null) {
-      throw Exception(
-          'Invalid or unknown sourceFilePath file name suffix: $sourceFilePath');
-    }
     var vaultDirectory = await MediaFileService().vaultDirectory;
     var fileName = createVaultFileName(sourceFilePath);
-    var path = '${vaultDirectory.path}/$fileName${mapping.vaultSuffix}';
+    var path = '${vaultDirectory.path}/$fileName$vaultSuffix';
     return path;
   }
 
@@ -231,6 +223,9 @@ class MediaFileMappings  {
   ///   (link file names with meta object containing tags, rating, etc)
   String createVaultFileName(String sourceFilePath) =>
       convertToNumber(fileNameWithoutExtension(sourceFilePath));
+
+  String fileNameWithoutExtension(String sourceFilePath) =>
+      basenameWithoutExtension(sourceFilePath);
 
   String fileExtension(sourceFileName) => extension(sourceFileName);
 
@@ -277,29 +272,10 @@ class MediaFileMappings  {
     return result;
   }
 
-  String fileNameWithoutExtension(String sourceFilePath) =>
-      basenameWithoutExtension(sourceFilePath);
-
-  bool hasTypeSuffix(String sourceFilePath) => MediaFileMapping.findForSourcePath(sourceFilePath)!=null;
-
-  String createEmulatedVaultFilePath(String vaultFilePath) {
-    var mapping =MediaFileMapping.findForVaultPath(vaultFilePath);
-    if (mapping==null) {
-      throw Exception(
-          'Invalid or unknown vaultFilePath file name suffix: $vaultFilePath');
-    }
+  File createEmulatedVaultFile(String vaultFilePath) {
     var datExtExp = RegExp(r'\.dat$');
-    var path = vaultFilePath.replaceFirst(datExtExp, mapping.typeSuffix);
-    return path;
-  }
-
-  MediaFileType vaultFileType(String vaultFilePath) {
-    var mapping = MediaFileMapping.findForVaultPath(vaultFilePath);
-    if (mapping==null) {
-      throw Exception(
-          'Invalid or unknown vaultFilePath file name suffix: $vaultFilePath');
-    }
-    return mapping.type;
+    var path = vaultFilePath.replaceFirst(datExtExp, typeSuffix);
+    return File(path);
   }
 }
 
@@ -307,15 +283,19 @@ class MediaFileMappings  {
 /// It links to a vault file
 /// But the [emulatedVaultFile] has the correct media file extension.
 class MediaFile implements File {
-  final File vaultFile;
-  final File emulatedVaultFile;
-  final MediaFileType type;
+  late File vaultFile;
+  late File emulatedVaultFile;
+  late MediaFileType type;
 
-  MediaFile(String vaultFilePath)
-      : vaultFile = File(vaultFilePath),
-        emulatedVaultFile = File(
-            MediaFileMappings().createEmulatedVaultFilePath(vaultFilePath)),
-        type = MediaFileMappings().vaultFileType(vaultFilePath);
+  MediaFile(String vaultFilePath) {
+    vaultFile = File(vaultFilePath);
+    var mapping = MediaFileMapping.findForVaultPath(vaultFilePath);
+    if (mapping == null) {
+      throw Exception('Unsupported vault file: $vaultFile');
+    }
+    emulatedVaultFile = mapping.createEmulatedVaultFile(vaultFilePath);
+    type = mapping.type;
+  }
 
   @override
   File get absolute => emulatedVaultFile.absolute;
