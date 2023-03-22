@@ -134,15 +134,16 @@ class MediaFileMoveService with ChangeNotifier {
     for (String sourcePath in paths) {
       var mapping = MediaFileMapping.findForSourcePath(sourcePath)!;
       var destinationPath = await mapping.createVaultFilePath(sourcePath);
-      //   .then((destinationPath) async {
-      // var status = await Permission.storage.status;
-      // if (!status.isGranted) {
-      //   await Permission.storage.request();
-      // }
-      // status = await Permission.manageExternalStorage.status;
-      // if (!status.isGranted) {
-      //   await Permission.manageExternalStorage.request();
-      // }
+      
+      /// ask permission if needed
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+      status = await Permission.manageExternalStorage.status;
+      if (!status.isGranted) {
+        await Permission.manageExternalStorage.request();
+      }
 
       try {
         File(sourcePath).copy(destinationPath);
