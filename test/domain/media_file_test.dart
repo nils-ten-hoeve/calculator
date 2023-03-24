@@ -4,7 +4,7 @@ import 'package:shouldly/shouldly.dart';
 
 void main() {
   given('MediaFileMapping', () {
-    MediaFileMapping  mediaFileMapping = MediaFileMapping.values.first;
+    MediaFileMapping mediaFileMapping = MediaFileMapping.values.first;
     when("calling isNumber('a'.codeUnitAt(0))", () {
       var result = mediaFileMapping.isNumber('a'.codeUnitAt(0));
       then('should return false', () {
@@ -132,52 +132,59 @@ void main() {
       });
     });
 
-    when("calling convertToNumber('1234567890')", () {
-      var result = mediaFileMapping.convertToNumber('1234567890');
-      then("return '1234567890'", () {
-        result.should.be('1234567890');
-      });
-    });
+    // when("calling convertToNumber('1234567890')", () {
+    //   var result = mediaFileMapping.convertToNumber('1234567890');
+    //   then("return '1234567890'", () {
+    //     result.should.be('1234567890');
+    //   });
+    // });
 
-    when("calling convertToNumber('12345 67890')", () {
-      var result = mediaFileMapping.convertToNumber('12345 67890');
-      then("return '12345067890'", () {
-        result.should.be('12345067890');
-      });
-    });
+    // when("calling convertToNumber('12345 67890')", () {
+    //   var result = mediaFileMapping.convertToNumber('12345 67890');
+    //   then("return '12345067890'", () {
+    //     result.should.be('12345067890');
+    //   });
+    // });
 
-    when("calling convertToNumber('12345-67890')", () {
-      var result = mediaFileMapping.convertToNumber('12345-67890');
-      then("return '12345067890'", () {
-        result.should.be('12345067890');
-      });
-    });
+    // when("calling convertToNumber('12345-67890')", () {
+    //   var result = mediaFileMapping.convertToNumber('12345-67890');
+    //   then("return '12345067890'", () {
+    //     result.should.be('12345067890');
+    //   });
+    // });
 
-    when("calling convertToNumber('12345_67890')", () {
-      var result = mediaFileMapping.convertToNumber('12345_67890');
-      then("return '12345067890'", () {
-        result.should.be('12345067890');
-      });
-    });
+    // when("calling convertToNumber('12345_67890')", () {
+    //   var result = mediaFileMapping.convertToNumber('12345_67890');
+    //   then("return '12345067890'", () {
+    //     result.should.be('12345067890');
+    //   });
+    // });
 
-    when("calling convertToNumber('12345a67890')", () {
-      var result = mediaFileMapping.convertToNumber('12345a67890');
-      then("return '12345167890'", () {
-        result.should.be('12345167890');
-      });
-    });
+    // when("calling convertToNumber('12345a67890')", () {
+    //   var result = mediaFileMapping.convertToNumber('12345a67890');
+    //   then("return '12345167890'", () {
+    //     result.should.be('12345167890');
+    //   });
+    // });
 
-    when("calling convertToNumber('12345A67890')", () {
-      var result = mediaFileMapping.convertToNumber('12345A67890');
-      then("return '12345167890'", () {
-        result.should.be('12345167890');
-      });
-    });
+    // when("calling convertToNumber('12345A67890')", () {
+    //   var result = mediaFileMapping.convertToNumber('12345A67890');
+    //   then("return '12345167890'", () {
+    //     result.should.be('12345167890');
+    //   });
+    // });
 
-    when("calling convertToNumber('12345AA67890')", () {
-      var result = mediaFileMapping.convertToNumber('12345AA67890');
-      then("return '123452767890'", () {
-        result.should.be('123452767890');
+    // when("calling convertToNumber('12345AA67890')", () {
+    //   var result = mediaFileMapping.convertToNumber('12345AA67890');
+    //   then("return '123452767890'", () {
+    //     result.should.be('123452767890');
+    //   });
+    // });
+
+    when("calling obscure('019ajkzAJKZ')", () {
+      var result = mediaFileMapping.obscure('019ajkzAJKZ_-~');
+      then("return '01909ap09ap", () {
+        result.should.be('01909ap09apsss');
       });
     });
   });

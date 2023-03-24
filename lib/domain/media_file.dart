@@ -81,12 +81,13 @@ class MediaFileService {
     if (!status.isGranted) {
       await Permission.storage.request();
     }
-    
+
     Directory inBrowserDirectory = await MediaFileService().inBrowserDirectory;
-    
+
     Stream<FileSystemEntity> files = inBrowserDirectory.list();
     return files
-        .where((FileSystemEntity e) => MediaFileMapping.findForSourcePath(e.path)!=null)
+        .where((FileSystemEntity e) =>
+            MediaFileMapping.findForSourcePath(e.path) != null)
         .map<String>((FileSystemEntity e) => e.path)
         .toList();
   }
@@ -134,7 +135,7 @@ class MediaFileMoveService with ChangeNotifier {
     for (String sourcePath in paths) {
       var mapping = MediaFileMapping.findForSourcePath(sourcePath)!;
       var destinationPath = await mapping.createVaultFilePath(sourcePath);
-      
+
       /// ask permission if needed
       var status = await Permission.storage.status;
       if (!status.isGranted) {
@@ -217,45 +218,69 @@ enum MediaFileMapping {
     return path;
   }
 
-  /// Converts a file name to a consistent number
+  /// Converts a file name
   /// * To obscure some file names
-  /// * But still be sortable
-  /// * And for fast lookup metadata
-  ///   (link file names with meta object containing tags, rating, etc)
+  /// * But still be sortable in the same order
   String createVaultFileName(String sourceFilePath) =>
-      convertToNumber(fileNameWithoutExtension(sourceFilePath));
+      obscure(fileNameWithoutExtension(sourceFilePath));
 
   String fileNameWithoutExtension(String sourceFilePath) =>
       basenameWithoutExtension(sourceFilePath);
 
   String fileExtension(sourceFileName) => extension(sourceFileName);
 
-  // converts a string with characters to a number. These numbers should
-  // roughly order the same as their source strings when sorted.
-  // (so that file stay together)
-  String convertToNumber(String string) {
-    String letters = '';
-    String number = '';
+  // // converts a string with characters to a number. These numbers should
+  // // roughly order the same as their source strings when sorted.
+  // // (so that file stay together)
+  // String convertToNumber(String string) {
+  //   String letters = '';
+  //   String number = '';
+  //   for (var char in string.split('')) {
+  //     var codeUnit = char.toLowerCase().codeUnitAt(0);
+  //     if (isLetter(codeUnit)) {
+  //       letters += char;
+  //     } else {
+  //       if (letters.isNotEmpty) {
+  //         number += lettersToNumber(letters).toRadixString(16);
+  //         letters = '';
+  //       }
+  //       if (isNumber(codeUnit)) {
+  //         number += char;
+  //       } else {
+  //         number += '0';
+  //       }
+  //     }
+  //   }
+  //   if (letters.isNotEmpty) {
+  //     number += lettersToNumber(letters).toString();
+  //   }
+  //   return number;
+  // }
+
+  // Obscures a string so that it is harder to read while the sorted strings
+  // are still in the same order. Each character is converted
+  // 0-9=0-9
+  // a-j or A-J=0-9
+  // k-z or K-Z=a-p
+  // other=s
+  String obscure(String string) {
+    String result = '';
     for (var char in string.split('')) {
       var codeUnit = char.toLowerCase().codeUnitAt(0);
       if (isLetter(codeUnit)) {
-        letters += char;
-      } else {
-        if (letters.isNotEmpty) {
-          number += lettersToNumber(letters).toString();
-          letters = '';
-        }
-        if (isNumber(codeUnit)) {
-          number += char;
+        if (codeUnit <= 'j'.codeUnitAt(0)) {
+          result += (codeUnit - 'a'.codeUnitAt(0)).toString();
         } else {
-          number += '0';
+          result += String.fromCharCode(
+              codeUnit - 'k'.codeUnitAt(0)+'a'.codeUnitAt(0));
         }
+      } else if (isNumber(codeUnit)) {
+        result += char;
+      } else {
+        result+='s';
       }
     }
-    if (letters.isNotEmpty) {
-      number += lettersToNumber(letters).toString();
-    }
-    return number;
+    return result;
   }
 
   bool isNumber(int codeUnit) =>
