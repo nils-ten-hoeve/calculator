@@ -31,13 +31,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: "^0.12.0"
   given_when_then_unit_test: ^0.1.0
   shouldly: ^0.5.0+1
 
 flutter:
   uses-material-design: true
 
+#run once with: flutter pub run flutter_launcher_icons
 flutter_icons:
+  android: "launcher_icon"
   image_path: "icon/icon.png"
-  android: true
+  min_sdk_android: 21 
