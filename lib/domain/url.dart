@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
 import 'package:calculator/constants.dart';
+import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:hive/hive.dart';
 
 /// Service class to manage Url's
@@ -49,20 +50,44 @@ class UrlService {
   /// Opens a url (e.g.: 'https://duckduckgo.com/') in a incognito browser
   openInIncognitoBrowser(String url) async {
     if (Platform.isAndroid) {
-      AndroidIntent intent = AndroidIntent(
-        componentName: "nu.tommie.inbrowser.lib.Inbrowser",
-        package: "nu.tommie.inbrowser",
-        action: "android.intent.action.VIEW",
-        category: "android.intent.category.GROWABLE",
-        data: url,
-      );
-      try {
-        await intent.launch();
-      } catch (e) {
-        //TODO test the following, maybe we can not catch an error ro maybe we need to call the following after some delay
-        // Try again, because InBrowser normally crashes the first time it is called.
-        await intent.launch();
-      }
+       await openInBrowserWithIntent(url);
+      //await openInBrowserWithLaunchApp();
+      //await openPrivateBrowserWithLaunchApp();
+    }
+  }
+
+  Future<void> openPrivateBrowserWithLaunchApp() async {
+    await LaunchApp.openApp(
+      androidPackageName: 'com.lechneralexander.privatebrowser',
+      //iosUrlScheme: 'pulsesecure://',
+      //appStoreLink: 'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
+    );
+  }
+
+  Future<void> openInBrowserWithLaunchApp() async {
+    await LaunchApp.openApp(
+      androidPackageName: 'nu.tommie.inbrowser',
+      //iosUrlScheme: 'pulsesecure://',
+      //appStoreLink: 'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
+    );
+  }
+
+  Future<void> openInBrowserWithIntent(String url) async {
+    AndroidIntent intent = AndroidIntent(
+   //  componentName: "nu.tommie.inbrowser.lib.Inbrowser",
+      package: "nu.tommie.inbrowser",
+      action: "android.intent.action.VIEW",
+     // category: "android.intent.category.GROWABLE",
+      data: url,
+
+      //See https://developer.android.com/training/package-visibility/declaring
+    );
+    try {
+      await intent.launch();
+    } catch (e) {
+      //TODO test the following, maybe we can not catch an error ro maybe we need to call the following after some delay
+      // Try again, because InBrowser normally crashes the first time it is called.
+      await intent.launch();
     }
   }
 
@@ -73,6 +98,7 @@ class UrlService {
   void validate(String url) {
     if (!_urlRegEx.hasMatch(url)) throw Exception('Invalid Url');
   }
+  
 }
 
 class UrlRepository {
