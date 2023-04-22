@@ -156,7 +156,7 @@ class _BrowserPageState extends State<BrowserPage> {
                     child: ListTile(
                       leading: const Icon(browserIcon),
                       title: Text(urls[i]),
-                      onTap: () => {urlService.openInIncognitoBrowser(urls[i])},
+                      onTap: () => {IncognitoBrowser().open(urls[i])},
                     ),
                   ),
               ],
